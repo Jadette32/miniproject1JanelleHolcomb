@@ -9,10 +9,10 @@ import numpy as np             # numbers work
 import matplotlib.pyplot as plt # charts
 import yfinance as yf           # grab stock data
 
-# Five tickers I’m using. Swap these for your own favorites if you want.
+# Five tickers I’m using. Swap these for favorites if you want.
 TICKERS = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]
 
-# Make a place to save the pictures. (We’re ignoring this folder in git.)
+# Make a place to save the pictures. (ignoring this folder in git.)
 os.makedirs("charts", exist_ok=True)
 
 # The rubric wants me to store data in lists first, then convert to NumPy.
@@ -23,7 +23,7 @@ for t in TICKERS:
     # Pull extra days so weekends/holidays don’t mess up getting 10 trading days.
     hist = yf.Ticker(t).history(period="30d", interval="1d", auto_adjust=False)
 
-    # I only want the last 10 trading-day CLOSE prices.
+    # only need the last 10 trading-day CLOSE prices.
     closes = hist["Close"].dropna().tail(10)
 
     # If a ticker is weird/illiquid and doesn’t have 10 points, fail fast.
@@ -40,7 +40,7 @@ for t in TICKERS:
 prices_np = np.array(all_price_lists, dtype=float)
 print("NumPy array shape (tickers x days):", prices_np.shape)
 
-# One simple chart per ticker. Clean, readable, nothing fancy.
+# One simple chart per ticker
 for i, t in enumerate(TICKERS):
     y = prices_np[i, :]
     x_positions = range(1, len(y) + 1)
@@ -53,7 +53,7 @@ for i, t in enumerate(TICKERS):
     plt.grid(True, linestyle="--", alpha=0.4)
     plt.xticks(ticks=x_positions, labels=date_labels_by_ticker[t], rotation=45, ha="right")
 
-    # Timestamp in the filename so I don’t overwrite charts if I rerun.
+    # Timestamp in the filename, so I don’t overwrite charts if I rerun.
     fname = f"{t}_close_last10_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
     fpath = os.path.join("charts", fname)
 
